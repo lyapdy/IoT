@@ -21,6 +21,7 @@
 
 #define MAX_DRONE_LENGTH 100
 
+
 typedef struct tail_t // структура хвост
 {
     int x;
@@ -150,7 +151,7 @@ void printDrone(struct drone_t drone,
                 SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
                 matrix[field.x][field.y] = 'w'; // весть урожай
                 SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); // сброс цвета
-                SetConsoleTextAttribute(hConsole, FOREGROUND_RED); // хочу покрасить только спелую тыкву в красный цвет - не получается и зафиксировать до конца игры
+                SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN); // хочу покрасить только спелую тыкву в красный цвет - не получается и зафиксировать до конца игры
                 matrix[pumpkin.x][pumpkin.y] = 'r'; // только зрелая тыква
                 }
     
@@ -358,6 +359,8 @@ int main()
     setlocale(LC_ALL, "Rus");
 	int p;
     int flag=1;
+    int cnt=0;
+    
    	printf("Здравствуйте!\nВыберите количество игроков - 1, 2 или 3:\n");
  	scanf("%d", &p);  
 	if (p > 0 && p <= 3)
@@ -385,6 +388,8 @@ int main()
 	
     while (flag==1)
  	{
+
+        
  		
         if (kbhit())
         {
@@ -414,7 +419,8 @@ int main()
         if ((drone.x == pumpkin.x) && (drone.y == pumpkin.y))
         {
 			pumpkin = initPumpkin(random_odd(), random_odd());
-			drone.tsize = drone.tsize+1;			
+			drone.tsize = drone.tsize+1;
+            cnt++;			
         }
         else if ((drone.tail[0].x == pumpkin.x) && (drone.tail[0].y == pumpkin.y))
         {
@@ -425,6 +431,7 @@ int main()
         {
 			pumpkin = initPumpkin(random_odd(), random_odd());
 			drone1.tsize = drone1.tsize+1;	
+            cnt++;
             		
         }
         else if ((drone1.tail[0].x == pumpkin.x) && (drone1.tail[0].y == pumpkin.y))
@@ -436,7 +443,8 @@ int main()
         if ((drone2.x == pumpkin.x) && (drone2.y == pumpkin.y))
         {
 			pumpkin = initPumpkin(random_odd(), random_odd());
-			drone2.tsize = drone2.tsize+1;	
+			drone2.tsize = drone2.tsize+1;
+            cnt++;	
             		
         }
         else if ((drone2.tail[0].x == pumpkin.x) && (drone2.tail[0].y == pumpkin.y))
@@ -450,18 +458,21 @@ int main()
 
         for (int i = 0; i < drone.tsize; ++i)
         {
-            if (drone.tail[i].x == drone.x && drone.tail[i].y == drone.y)
+            if (drone.tail[i].x == drone.x && drone.tail[i].y == drone.y) // столкновение дрона с собой
             {flag = 0;
-            printf("Конец игрыr");
-            sleep(5);
-            
+            printf("Конец игрыr\n");
+            printf("%d\n", cnt);
+            sleep(5);            
             }
         }    
 
 		
-		if (pumpkin.isTaken)
+		if (cnt == 1) // если все дроны собирают все тыквы - то мы выиграли!
 		{			
-            
+            flag = 0;
+            printf("Вы выиграли! Поздавляем!\n");
+            printf("%d\n", cnt);
+            sleep(5);
 		}
 		sleep(1);
         system("cls");
